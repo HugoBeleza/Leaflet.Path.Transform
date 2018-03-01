@@ -594,6 +594,11 @@ L.Handler.PathTransform = L.Handler.extend({
 
     this._originMarker = this._handlers[(marker.options.index + 2) % 4];
     this._scaleOrigin  = this._originMarker.getLatLng();
+    if (marker.options.index == 0 || 2) {
+      var intermediateMarker = this._handlers[(marker.options.index + 1) % 4];
+    } else {
+      var intermediateMarker = this._handlers[(marker.options.index + 1) % 4];
+    }
 
     this._initialMatrix = this._matrix.clone();
     this._cachePoints();
@@ -602,8 +607,8 @@ L.Handler.PathTransform = L.Handler.extend({
       .on('mousemove', this._onScale,    this)
       .on('mouseup',   this._onScaleEnd, this);
     this._initialDist  = this._originMarker._point.distanceTo(this._activeMarker._point);
-    this._initialDistX = this._originMarker._point.x - this._activeMarker._point.x;
-    this._initialDistY = this._originMarker._point.y - this._activeMarker._point.y;
+    this._initialDistX = this._originMarker._point.distanceTo(intermediateMarker); // FIXME: You can do this
+    this._initialDistY = this._activeMarker._point.distanceTo(intermediateMarker);
 
     this._path
       .fire('transformstart', { layer: this._path })
